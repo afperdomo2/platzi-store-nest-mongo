@@ -38,3 +38,5 @@ lerna-debug.log*
 .env
 .prod.env
 .stag.env
+
+/mongo_data
