@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config/dist';
 import { lastValueFrom } from 'rxjs';
 
 import configuration from './config/configuration';
-import envValidations from './config/envValidations';
+import envValidations from './config/env-validations';
 import { enviroments } from './enviroments';
 
 import { AppController } from './app.controller';

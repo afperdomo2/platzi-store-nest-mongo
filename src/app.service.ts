@@ -13,7 +13,7 @@ export class AppService {
 
   getHello(): string {
     const apiKey = this.config.apiKey;
-    const dbName = this.config.database.name;
+    const dbName = this.config.mongo.database;
     return `
       API key => ${apiKey}.<br/>
       Database name => ${dbName}.<br/>
