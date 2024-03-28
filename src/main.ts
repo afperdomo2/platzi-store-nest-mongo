@@ -1,7 +1,13 @@
-import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { config } from 'dotenv';
 import { AppModule } from './app.module';
+
+config();
+const configService = new ConfigService();
+const PORT = configService.get('PORT');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -35,6 +41,7 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   app.enableCors();
-  await app.listen(3000);
+  await app.listen(PORT);
+  console.info(`🚀 Server running on port: ${PORT}`);
 }
 bootstrap();
