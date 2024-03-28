@@ -1,32 +1,17 @@
-import { Module } from '@nestjs/common';
 import { HttpModule, HttpService } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config/dist';
 import { lastValueFrom } from 'rxjs';
-import { MongoClient } from 'mongodb';
 
-import { enviroments } from './enviroments';
 import configuration from './config/configuration';
 import envValidations from './config/envValidations';
+import { enviroments } from './enviroments';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { DatabaseModule } from './database/database.module';
 import { ProductsGroupModule } from './modules/products/products.module';
 import { UsersGroupModule } from './modules/users/users.module';
-import { DatabaseModule } from './database/database.module';
-
-const URI =
-  'mongodb://root:123456@localhost:27017/?authSource=admin&readPreference=primary&ssl=false';
-
-const client = new MongoClient(URI);
-
-async function run() {
-  await client.connect();
-  const database = client.db('platzi-store');
-  const taskCollection = database.collection('tasks');
-  const tasks = await taskCollection.find({}).toArray();
-  console.info(tasks);
-}
-run();
 
 @Module({
   imports: [
