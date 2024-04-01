@@ -29,12 +29,12 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  getOrdersByUser(id: number): Order {
-    return {
-      date: new Date(Date.now()),
-      user: { id },
-      products: this.productService.findAll(),
-    };
+  getOrdersByUser() {
+    // return {
+    //   date: new Date(Date.now()),
+    //   user: { id },
+    //   products: this.productService.findAll(),
+    // };
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

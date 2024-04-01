@@ -35,7 +35,7 @@ export class UsersController {
 
   @Get(':id/orders')
   getProducts(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.getOrdersByUser(id);
+    //return this.usersService.getOrdersByUser(id);
   }
 
   @Patch(':id')
