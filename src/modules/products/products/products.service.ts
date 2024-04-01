@@ -1,23 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './schemas/product.schema';
 
 @Injectable()
 export class ProductsService {
-  // private counterId = 1;
-  // private products: Product[] = [
-  //   {
-  //     id: 1,
-  //     name: 'Nevera',
-  //     description: 'Nevera 200w',
-  //     price: 300,
-  //     stock: 0,
-  //     image: '',
-  //   },
-  // ];
+  constructor(
+    @InjectModel(Product.name) private productModel: Model<Product>,
+  ) {}
 
-  create(createProduct: CreateProductDto) {
+  async create(createProduct: CreateProductDto) {
     // this.counterId++;
     // const newProduct = {
     //   id: this.counterId,
@@ -27,16 +22,16 @@ export class ProductsService {
     // return newProduct;
   }
 
-  findAll() {
-    //return this.products;
+  async findAll() {
+    return await this.productModel.find().exec();
   }
 
-  findOne(id: number) {
-    // const product = this.products.find((product) => product.id === id);
-    // if (!product) {
-    //   throw new NotFoundException(`Product #${id} not found`);
-    // }
-    // return product;
+  async findOne(id: string) {
+    const product = await this.productModel.findById(id).exec();
+    if (!product) {
+      throw new NotFoundException(`Product #${id} not found`);
+    }
+    return product;
   }
 
   update(id: number, updateProduct: UpdateProductDto) {
