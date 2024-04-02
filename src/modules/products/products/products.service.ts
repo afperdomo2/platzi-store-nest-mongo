@@ -13,13 +13,18 @@ export class ProductsService {
   ) {}
 
   async create(createProduct: CreateProductDto) {
-    // this.counterId++;
-    // const newProduct = {
-    //   id: this.counterId,
-    //   ...createProduct,
-    // };
-    // this.products.push(newProduct);
-    // return newProduct;
+    const newProduct = new this.productModel(createProduct);
+    return newProduct.save();
+  }
+
+  async update(id: string, changes: UpdateProductDto) {
+    const product = this.productModel
+      .findByIdAndUpdate(id, { $set: changes }, { new: true })
+      .exec();
+    if (!product) {
+      throw new NotFoundException(`Product #${id} not found`);
+    }
+    return product;
   }
 
   async findAll() {
@@ -34,22 +39,7 @@ export class ProductsService {
     return product;
   }
 
-  update(id: number, updateProduct: UpdateProductDto) {
-    // const product = this.findOne(id);
-    // if (!product) {
-    //   return null;
-    // }
-    // const index = this.products.findIndex((product) => product.id === id);
-    // this.products[index] = { ...product, ...updateProduct };
-    // return this.products[index];
-  }
-
-  remove(id: number) {
-    // const index = this.products.findIndex((product) => product.id === id);
-    // if (index === -1) {
-    //   throw new NotFoundException(`Product #${id} not found`);
-    // }
-    // this.products.splice(index, 1);
-    // return true;
+  remove(id: string) {
+    return this.productModel.findByIdAndDelete(id).exec();
   }
 }

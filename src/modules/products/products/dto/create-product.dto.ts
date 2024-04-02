@@ -1,42 +1,42 @@
-/**
- * Los Data Transfer Objects (DTO) se utilizan en NestJS para representar los datos
- * que se transmiten entre las capas de la aplicación.
- *
- * Los DTO son objetos simples que tienen solo los datos que son necesarios para una
- * tarea específica.
- */
+import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsString,
-  IsUrl,
-  IsPositive,
   IsInt,
   IsNotEmpty,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUrl,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateProductDto {
+  @ApiProperty({ description: 'Product name', example: 'Shoes' })
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ description: 'Nombre del producto' })
   readonly name: string;
 
+  @ApiProperty({
+    description: 'Product description',
+    example: 'Best shoes ever',
+  })
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ description: 'Descripción del producto' })
   readonly description: string;
 
+  @ApiProperty({ description: 'Product price', example: 100 })
   @IsPositive()
   @IsNotEmpty()
-  @ApiProperty({ description: 'Precio del producto' })
   readonly price: number;
 
+  @ApiProperty({ description: 'Product stock', example: 10 })
   @IsInt()
-  @IsNotEmpty()
-  @ApiProperty({ description: 'Stock del producto' })
+  @IsOptional()
   readonly stock: number;
 
+  @ApiProperty({
+    description: 'Product image URL',
+    example: 'http://example.com',
+  })
   @IsUrl()
   @IsNotEmpty()
-  @ApiProperty({ description: 'URL de la imagen del producto' })
   readonly image: string;
 }

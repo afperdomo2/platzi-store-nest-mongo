@@ -1,70 +1,55 @@
 import {
-  Controller,
-  Res,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  ParseIntPipe,
-  HttpStatus,
+  Get,
   HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { ProductsService } from './products.service';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ParseIdPipe } from '../../../common/parse-id/parse-id.pipe';
-import { Response } from 'express';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiCreatedResponse,
-  ApiAcceptedResponse,
-} from '@nestjs/swagger';
+import { ProductsService } from './products.service';
 
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Post('validate/:id')
-  @ApiOperation({ summary: 'Valida si un producto está activo' })
-  @ApiAcceptedResponse({ description: 'Validado correctamente' })
-  validate(@Res() response: Response, @Param('id', ParseIdPipe) id: number) {
-    // Realiza una respuesta manual con Express
-    response.status(202).send({
-      message: `Validado correctamente el Id ${id}`,
-    });
-  }
-
   @Post()
-  @ApiCreatedResponse({ description: 'Creado correctamente' })
+  @ApiOperation({ summary: 'Create a product' })
+  @ApiCreatedResponse({
+    description: 'The product has been successfully created.',
+  })
   create(@Body() createProduct: CreateProductDto) {
     return this.productsService.create(createProduct);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all products' })
   findAll() {
     return this.productsService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a product by ID' })
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateProduct: UpdateProductDto,
-  ) {
+  @ApiOperation({ summary: 'Update a product by ID' })
+  update(@Param('id') id: string, @Body() updateProduct: UpdateProductDto) {
     return this.productsService.update(id, updateProduct);
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a product by ID' })
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id') id: string) {
     return this.productsService.remove(id);
   }
 }

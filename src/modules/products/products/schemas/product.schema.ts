@@ -1,22 +1,25 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Product extends Document {
   @Prop({ required: true })
   name: string;
 
-  @Prop()
+  @Prop({ required: true })
   description?: string;
 
-  @Prop({ type: Number })
+  @Prop({ required: true, type: Number, min: 0 })
   price: number;
 
-  @Prop({ type: Number })
-  stock: number = 0;
+  @Prop({ type: Number, min: 0, default: 0 })
+  stock: number;
 
-  @Prop()
-  image?: string;
+  @Prop({ required: true })
+  image: string;
+
+  @Prop({ default: true })
+  isActive: boolean;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
