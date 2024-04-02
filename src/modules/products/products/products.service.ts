@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { CreateProductDto } from './dto/create-product.dto';
+import { FilterProductsDto } from './dto/filter-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './schemas/product.schema';
 
@@ -27,8 +28,12 @@ export class ProductsService {
     return product;
   }
 
-  async findAll() {
-    return await this.productModel.find().exec();
+  async findAll(params?: FilterProductsDto) {
+    if (params) {
+      const { limit, offset } = params;
+      return this.productModel.find().skip(offset).limit(limit).exec();
+    }
+    return this.productModel.find().exec();
   }
 
   async findOne(id: string) {

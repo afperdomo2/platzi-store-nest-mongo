@@ -28,6 +28,12 @@ async function bootstrap() {
        * están en la lista blanca, el validador lanzará un error.
        */
       forbidNonWhitelisted: true,
+
+      /**
+       * Si se establece en verdadero, el validador intentará transformar los tipos de
+       * las propiedades para que coincidan con el tipo definido en el esquema.
+       */
+      transformOptions: { enableImplicitConversion: true },
     }),
   );
 
