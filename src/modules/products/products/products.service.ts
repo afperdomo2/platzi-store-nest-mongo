@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { isNumber } from 'class-validator';
 import { FilterQuery, Model } from 'mongoose';
 
-import { isNumber } from 'class-validator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FilterProductsDto } from './dto/filter-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -31,8 +31,6 @@ export class ProductsService {
 
   async findAll(params?: FilterProductsDto) {
     const filters = this.assingFilterQuery(params);
-    console.log('params:', params);
-    console.log('filters:', filters);
     const { limit, offset } = params;
     if (limit && isNumber(offset)) {
       return this.productModel.find(filters).skip(offset).limit(limit).exec();

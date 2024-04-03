@@ -1,26 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { Brand } from './schemas/brand.schema';
 
 @Injectable()
 export class BrandsService {
-  create(createBrandDto: CreateBrandDto) {
-    return 'This action adds a new brand';
+  constructor(@InjectModel(Brand.name) private brandModel: Model<Brand>) {}
+
+  async create(createBrandDto: CreateBrandDto) {
+    const newBrand = new this.brandModel(createBrandDto);
+    return newBrand.save();
   }
 
-  findAll() {
-    return `This action returns all brands`;
+  async update(id: string, changes: UpdateBrandDto) {
+    const brand = this.brandModel
+      .findByIdAndUpdate(id, { $set: changes }, { new: true })
+      .exec();
+    if (!brand) {
+      throw new NotFoundException(`Brand #${id} not found`);
+    }
+    return brand;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} brand`;
+  async findAll() {
+    return this.brandModel.find().exec();
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  async findOne(id: string) {
+    const brand = await this.brandModel.findById(id).exec();
+    if (!brand) {
+      throw new NotFoundException(`Brand #${id} not found`);
+    }
+    return brand;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+  remove(id: string) {
+    return this.brandModel.findByIdAndDelete(id).exec();
   }
 }
