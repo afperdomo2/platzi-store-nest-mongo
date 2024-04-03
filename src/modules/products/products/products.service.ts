@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 
+import { isNumber, min } from 'class-validator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FilterProductsDto } from './dto/filter-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -29,11 +30,14 @@ export class ProductsService {
   }
 
   async findAll(params?: FilterProductsDto) {
-    if (params) {
-      const { limit, offset } = params;
-      return this.productModel.find().skip(offset).limit(limit).exec();
+    const filters = this.assingFilterQuery(params);
+    console.log('params:', params);
+    console.log('filters:', filters);
+    const { limit, offset } = params;
+    if (limit && isNumber(offset)) {
+      return this.productModel.find(filters).skip(offset).limit(limit).exec();
     }
-    return this.productModel.find().exec();
+    return this.productModel.find(filters).exec();
   }
 
   async findOne(id: string) {
@@ -44,7 +48,28 @@ export class ProductsService {
     return product;
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     return this.productModel.findByIdAndDelete(id).exec();
+  }
+
+  assingFilterQuery(params: FilterProductsDto) {
+    const filters: FilterQuery<Product> = {};
+    const { minPrice, maxPrice, stock, minStock, maxStock } = params;
+    if (isNumber(minPrice)) {
+      filters.price = { ...filters.price, $gte: minPrice };
+    }
+    if (maxPrice) {
+      filters.price = { ...filters.price, $lte: maxPrice };
+    }
+    if (isNumber(stock)) {
+      filters.stock = { ...filters.stock, $eq: stock };
+    }
+    if (isNumber(minStock)) {
+      filters.stock = { ...filters.stock, $gte: minStock };
+    }
+    if (maxStock) {
+      filters.stock = { ...filters.stock, $lte: maxStock };
+    }
+    return filters;
   }
 }
