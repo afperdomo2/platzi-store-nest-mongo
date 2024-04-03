@@ -6,7 +6,9 @@ import {
   IsPositive,
   IsString,
   IsUrl,
+  ValidateNested,
 } from 'class-validator';
+import { CreateCategoryDto } from '../../categories/dto/create-category.dto';
 
 export class CreateProductDto {
   @ApiProperty({ description: 'Product name', example: 'Shoes' })
@@ -22,7 +24,7 @@ export class CreateProductDto {
   @IsNotEmpty()
   readonly description: string;
 
-  @ApiProperty({ description: 'Product price', example: 100 })
+  @ApiProperty({ description: 'Product price', example: 90_000 })
   @IsPositive()
   @IsNotEmpty()
   readonly price: number;
@@ -39,4 +41,12 @@ export class CreateProductDto {
   @IsUrl()
   @IsNotEmpty()
   readonly image: string;
+
+  @ApiProperty({
+    description: 'Product category',
+    example: { name: 'Clothes', image: 'http://example.com' },
+  })
+  @ValidateNested() // Este decorador es necesario para validar objetos anidados
+  @IsNotEmpty()
+  readonly category: CreateCategoryDto;
 }
