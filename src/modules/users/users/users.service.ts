@@ -1,47 +1,43 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config/dist';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Order } from '../orders/entities/order.entity';
-import { ProductsService } from 'src/modules/products/products/products.service';
-
-import configuration from 'src/config/configuration';
+import { User } from './schemas/user.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private productService: ProductsService,
-    @Inject(configuration.KEY) private config: ConfigType<typeof configuration>,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(data: CreateUserDto) {
+    const newUser = new this.userModel(data);
+    return newUser.save();
   }
 
-  findAll() {
-    const apiKey = this.config.apiKey;
-    const dbName = this.config.mongo.database;
-    console.info(apiKey, dbName);
-    return `This action returns all users`;
+  async update(id: string, changes: UpdateUserDto) {
+    const user = this.userModel
+      .findByIdAndUpdate(id, { $set: changes }, { new: true })
+      .exec();
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`);
+    }
+    return user;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findAll() {
+    return this.userModel.find().exec();
   }
 
-  getOrdersByUser() {
-    // return {
-    //   date: new Date(Date.now()),
-    //   user: { id },
-    //   products: this.productService.findAll(),
-    // };
+  async findOne(id: string) {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`);
+    }
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    return this.userModel.findByIdAndDelete(id).exec();
   }
 }

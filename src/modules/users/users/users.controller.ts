@@ -1,17 +1,19 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  ParseIntPipe,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { UsersService } from './users.service';
 
 @ApiTags('users')
 @Controller('users')
@@ -19,35 +21,39 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @ApiOperation({ summary: 'Create a user' })
+  @ApiCreatedResponse({
+    description: 'The user has been successfully created.',
+  })
+  create(@Body() createUser: CreateUserDto) {
+    return this.usersService.create(createUser);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all users' })
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  @ApiOperation({ summary: 'Get a user by ID' })
+  findOne(@Param('id', MongoIdPipe) id: string) {
     return this.usersService.findOne(id);
   }
 
-  @Get(':id/orders')
-  getProducts(@Param('id', ParseIntPipe) id: number) {
-    //return this.usersService.getOrdersByUser(id);
-  }
-
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a user by ID' })
   update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
+    @Param('id', MongoIdPipe) id: string,
+    @Body() updateUser: UpdateUserDto,
   ) {
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(id, updateUser);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  @ApiOperation({ summary: 'Delete a user by ID' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id', MongoIdPipe) id: string) {
     return this.usersService.remove(id);
   }
 }

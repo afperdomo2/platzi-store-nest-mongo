@@ -14,8 +14,8 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 
-  async create(createProduct: CreateProductDto) {
-    const newProduct = new this.productModel(createProduct);
+  async create(data: CreateProductDto) {
+    const newProduct = new this.productModel(data);
     return newProduct.save();
   }
 
@@ -24,7 +24,7 @@ export class ProductsService {
       .findByIdAndUpdate(id, { $set: changes }, { new: true })
       .exec();
     if (!product) {
-      throw new NotFoundException(`Product #${id} not found`);
+      throw new NotFoundException(`Product ${id} not found`);
     }
     return product;
   }
@@ -49,7 +49,7 @@ export class ProductsService {
       .populate('brand')
       .exec();
     if (!product) {
-      throw new NotFoundException(`Product #${id} not found`);
+      throw new NotFoundException(`Product ${id} not found`);
     }
     return product;
   }
