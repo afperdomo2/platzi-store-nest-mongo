@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsInt,
+  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsPositive,
@@ -49,4 +50,8 @@ export class CreateProductDto {
   @ValidateNested() // Este decorador es necesario para validar objetos anidados
   @IsNotEmpty()
   readonly category: CreateCategoryDto;
+
+  @IsMongoId()
+  @IsNotEmpty({ message: 'The brand must be a valid ObjectId' })
+  readonly brand: string;
 }

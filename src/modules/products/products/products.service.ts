@@ -33,13 +33,21 @@ export class ProductsService {
     const filters = this.assingFilterQuery(params);
     const { limit, offset } = params;
     if (limit && isNumber(offset)) {
-      return this.productModel.find(filters).skip(offset).limit(limit).exec();
+      return this.productModel
+        .find(filters)
+        .populate('brand')
+        .skip(offset)
+        .limit(limit)
+        .exec();
     }
-    return this.productModel.find(filters).exec();
+    return this.productModel.find(filters).populate('brand').exec();
   }
 
   async findOne(id: string) {
-    const product = await this.productModel.findById(id).exec();
+    const product = await this.productModel
+      .findById(id)
+      .populate('brand')
+      .exec();
     if (!product) {
       throw new NotFoundException(`Product #${id} not found`);
     }
