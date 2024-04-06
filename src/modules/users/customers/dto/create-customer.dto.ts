@@ -28,6 +28,7 @@ export class CreateCustomerDto {
   @IsOptional()
   readonly phone?: string;
 
+  @ApiProperty({ type: [CreateSkillDto], description: 'Customer skills' })
   @ValidateNested()
   @Type(() => CreateSkillDto)
   @IsNotEmpty()

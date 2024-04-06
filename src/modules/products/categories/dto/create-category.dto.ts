@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 
 export class CreateCategoryDto {
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   readonly name: string;
 
-  @IsNotEmpty()
   @IsUrl()
+  @IsNotEmpty()
   readonly image: string;
 }

@@ -1,6 +1,10 @@
-import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Brand } from '../../brands/schemas/brand.schema';
+import {
+  Category,
+  CategorySchema,
+} from '../../categories/schemas/category.schema';
 
 @Schema({ timestamps: true })
 export class Product extends Document {
@@ -22,8 +26,8 @@ export class Product extends Document {
   @Prop({ default: true })
   isActive: boolean;
 
-  @Prop(raw({ name: { type: String }, image: { type: String } }))
-  category: Record<string, any>;
+  @Prop({ type: CategorySchema })
+  category: Category;
 
   @Prop({ type: Types.ObjectId, ref: Brand.name, required: true })
   brand: Brand | Types.ObjectId;

@@ -10,6 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { CreateCategoryDto } from '../../categories/dto/create-category.dto';
+import { Type } from 'class-transformer';
 
 export class CreateProductDto {
   @ApiProperty({ description: 'Product name', example: 'Shoes' })
@@ -49,6 +50,7 @@ export class CreateProductDto {
   })
   @ValidateNested() // Este decorador es necesario para validar objetos anidados
   @IsNotEmpty()
+  @Type(() => CreateCategoryDto)
   readonly category: CreateCategoryDto;
 
   @IsMongoId()
