@@ -12,6 +12,7 @@ import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrdersService } from './orders.service';
+import { AddProductsToOrderDto } from './dto/add-products-to-order.dto';
 
 @ApiTags('orders')
 @Controller('orders')
@@ -52,5 +53,23 @@ export class OrdersController {
   @ApiOperation({ summary: 'Delete an order by ID' })
   remove(@Param('id', MongoIdPipe) id: string) {
     return this.ordersService.remove(id);
+  }
+
+  @Patch(':id/products')
+  @ApiOperation({ summary: 'Add products to an order' })
+  addProduct(
+    @Param('id', MongoIdPipe) id: string,
+    @Body() payload: AddProductsToOrderDto,
+  ) {
+    return this.ordersService.addProducts(id, payload.products);
+  }
+
+  @Delete(':id/products/:productId')
+  @ApiOperation({ summary: 'Remove a product from an order' })
+  removeProduct(
+    @Param('id', MongoIdPipe) id: string,
+    @Param('productId', MongoIdPipe) productId: string,
+  ) {
+    return this.ordersService.removeProduct(id, productId);
   }
 }

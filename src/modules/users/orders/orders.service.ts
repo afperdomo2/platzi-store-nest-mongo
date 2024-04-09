@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -41,5 +41,17 @@ export class OrdersService {
 
   async remove(id: string) {
     return this.orderModel.findByIdAndDelete(id);
+  }
+
+  async addProducts(id: string, products: Types.Array<Types.ObjectId>) {
+    const order = await this.orderModel.findById(id);
+    order.products.push(...products);
+    return order.save();
+  }
+
+  async removeProduct(id: string, productId: string) {
+    const order = await this.orderModel.findById(id);
+    order.products.pull(productId);
+    return order.save();
   }
 }
