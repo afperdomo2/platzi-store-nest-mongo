@@ -1,5 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { ApiHeader } from '@nestjs/swagger';
 import { AppService } from './app.service';
+import { ApiKeyGuard } from './auth/guards/api-key.guard';
 
 @Controller()
 export class AppController {
@@ -15,7 +17,13 @@ export class AppController {
     return await this.appService.getTasks();
   }
 
+  @UseGuards(ApiKeyGuard)
   @Get('new')
+  @ApiHeader({
+    name: 'Auth',
+    description: 'Api Key',
+    required: true,
+  })
   newEndpoint() {
     return 'Soy un nuevo endpoint';
   }

@@ -9,6 +9,7 @@ import { enviroments } from './enviroments';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { ProductsGroupModule } from './modules/products/products.module';
 import { UsersGroupModule } from './modules/users/users.module';
@@ -25,6 +26,7 @@ import { UsersGroupModule } from './modules/users/users.module';
     ProductsGroupModule,
     UsersGroupModule,
     DatabaseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
