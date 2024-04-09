@@ -9,7 +9,7 @@ import {
   IsUrl,
   ValidateNested,
 } from 'class-validator';
-import { CreateCategoryDto } from '../../categories/dto/create-category.dto';
+import { CreateCategoryDto } from './create-category.dto';
 import { Type } from 'class-transformer';
 
 export class CreateProductDto {
