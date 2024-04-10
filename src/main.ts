@@ -38,7 +38,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('API Platzi NestJS')
+    .setTitle('API Platzi NestJS - Mongoose')
     .setDescription('API del curso de NestJS')
     .setVersion('1.0')
     .addTag('store')
