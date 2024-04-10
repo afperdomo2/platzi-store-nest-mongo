@@ -2,7 +2,8 @@ import * as Joi from 'joi';
 
 export default Joi.object({
   PORT: Joi.number().required().max(9999),
-  API_KEY: Joi.number().required(),
+  API_KEY: Joi.string().required(),
+
   MONGO_CONNECTION: Joi.string().required(),
   MONGO_HOST: Joi.string().required(),
   MONGO_PORT: Joi.number().required().max(99_999),
