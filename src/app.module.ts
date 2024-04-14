@@ -3,17 +3,15 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config/dist';
 import { lastValueFrom } from 'rxjs';
 
-import configuration from './config/configuration';
-import envValidations from './config/env-validations';
-import { enviroments } from './enviroments';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import configuration from './config/configuration';
+import validationSchema from './config/validation.schema';
 import { DatabaseModule } from './database/database.module';
+import { enviroments } from './enviroments';
 import { ProductsGroupModule } from './modules/products/products.module';
 import { UsersGroupModule } from './modules/users/users.module';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -21,12 +19,7 @@ import { JwtModule } from '@nestjs/jwt';
       envFilePath: enviroments[process.env.NODE_ENV] || '.env',
       load: [configuration],
       isGlobal: true,
-      validationSchema: envValidations,
-    }),
-    JwtModule.register({
-      global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '4h' },
+      validationSchema,
     }),
     HttpModule,
     ProductsGroupModule,
