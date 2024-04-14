@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-export class LoginLocalUserDto {
-  @ApiProperty({ description: 'The user email', example: 'test@gmail.com' })
+export class SingInDto {
+  @ApiProperty({ description: 'The user email', example: 'test@domain.com' })
   @IsEmail()
   @IsNotEmpty()
   readonly email: string;
