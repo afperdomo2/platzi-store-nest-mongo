@@ -42,6 +42,7 @@ async function bootstrap() {
     .setDescription('API del curso de NestJS')
     .setVersion('1.0')
     .addTag('store')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

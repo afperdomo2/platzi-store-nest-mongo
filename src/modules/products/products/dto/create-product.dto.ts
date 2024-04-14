@@ -34,7 +34,7 @@ export class CreateProductDto {
   @ApiProperty({ description: 'Product stock', example: 10 })
   @IsInt()
   @IsOptional()
-  readonly stock: number;
+  readonly stock?: number;
 
   @ApiProperty({
     description: 'Product image URL',

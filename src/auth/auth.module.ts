@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
+import configuration from 'src/config/configuration';
 import { UsersModule } from 'src/modules/users/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigType } from '@nestjs/config';
-import configuration from 'src/config/configuration';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -14,14 +15,13 @@ import configuration from 'src/config/configuration';
       inject: [configuration.KEY],
       useFactory: (config: ConfigType<typeof configuration>) => {
         return {
-          global: true,
           secret: config.jwtSecret,
           signOptions: { expiresIn: '4h' },
         };
       },
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}
