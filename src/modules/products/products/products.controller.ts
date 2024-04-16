@@ -17,21 +17,25 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/enums/roles.enum';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FilterProductsDto } from './dto/filter-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
-import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('products')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @Roles(Role.ADMIN, Role.CUSTOMER)
   @ApiOperation({ summary: 'Create a product' })
   @ApiBearerAuth()
   @ApiCreatedResponse({
@@ -41,21 +45,22 @@ export class ProductsController {
     return this.productsService.create(createProduct);
   }
 
-  @Public()
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Get all products' })
   findAll(@Query() params: FilterProductsDto) {
     return this.productsService.findAll(params);
   }
 
-  @Public()
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: 'Get a product by ID' })
   findOne(@Param('id', MongoIdPipe) id: string) {
     return this.productsService.findOne(id);
   }
 
   @Patch(':id')
+  @Roles(Role.ADMIN, Role.CUSTOMER)
   @ApiOperation({ summary: 'Update a product by ID' })
   @ApiBearerAuth()
   update(
@@ -66,6 +71,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Delete a product by ID' })
   @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
